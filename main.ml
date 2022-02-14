@@ -20,6 +20,23 @@ let read =
     (*Ici faudra mettre toute la partie du code qui lit la prochaine ligne et 
     modifie la liste map *)
 
+
+let load_level (level : int) =
+    let nom_dossier = ref "levels/level" in
+    nom_dossier := !nom_dossier ^ (string_of_int level);
+    nom_dossier := !nom_dossier ^ ".txt";
+
+    let lignes = ref [] in
+    let file = open_in !nom_dossier in
+
+    try
+        while true do
+            lignes := input_line file :: !lignes
+        done;
+        !lignes
+    with End_of_file -> close_in file;
+    List.rev !lignes;;
+
 let lose =
     Printf.sprintf "Et c'est perdu !";
 
