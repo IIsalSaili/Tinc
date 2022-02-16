@@ -10,7 +10,7 @@ let vert = rouge_clair+1
 let vert_clair = vert+1
 let bleu = vert_clair+1
 let bleu_clair = bleu+1
-(*lol*)
+
 
 let ncolors = bleu_clair + 1
 
@@ -164,9 +164,6 @@ let verif_tile tab joueur=
     if !touch = 1 then hit joueur else fail joueur
 
 
-(* yoooo bite *)
-(* yyyy *)
-
 let _ =
     let running = ref true in
     let state = ref 't' in
@@ -185,10 +182,11 @@ let _ =
         if !state = 't' then begin
         
             couleur blanc noir;
-            ignore (mvaddstr (h/2) (w/2) (Printf.sprintf "Tinc main %d title" !ch));
+            ignore (mvaddstr (h/2-2) (w/2-8) (Printf.sprintf "Tinc main %3d title" !ch));
+            ignore (mvaddstr (h/2) (w/2-10) (Printf.sprintf "Press space to continue"));
         
         end;
-        
+
         Unix.sleepf 0.05;
         ignore(refresh());
 
