@@ -163,6 +163,7 @@ let verif_tile tab joueur=
     if !touch = 1 then hit joueur else fail joueur
 
 
+(* yoooo bite *)
 
 let _ =
     let running = ref true in
