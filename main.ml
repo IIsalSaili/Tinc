@@ -10,7 +10,6 @@ let vert = rouge_clair+1
 let vert_clair = vert+1
 let bleu = vert_clair+1
 let bleu_clair = bleu+1
-(*lol*)
 
 let ncolors = bleu_clair + 1
 
@@ -162,10 +161,6 @@ let verif_tile tab joueur=
     done;
     end;
     if !touch = 1 then hit joueur else fail joueur
-
-
-(* yoooo bite *)
-(* yyyy *)
 
 let _ =
     let running = ref true in
