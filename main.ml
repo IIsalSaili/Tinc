@@ -1,5 +1,87 @@
 open Curses
 
+
+let noir = 0
+let gris = noir+1
+let blanc = gris+1
+let rouge = blanc+1
+let rouge_clair = rouge+1
+let vert = rouge_clair+1
+let vert_clair = vert+1
+let bleu = vert_clair+1
+let bleu_clair = bleu+1
+
+let ncolors = bleu_clair + 1
+
+let cree_couleurs () =
+    assert(init_color noir 0 0 0);
+    assert(init_color gris 500 500 500);
+    assert(init_color blanc 1000 1000 1000);
+    assert(init_color rouge 1000 0 0);
+    assert(init_color rouge_clair 1000 500 500);
+    assert(init_color vert 0 1000 0);
+    assert(init_color vert_clair 500 1000 500);
+    assert(init_color bleu 0 0 1000);
+    assert(init_color bleu_clair 500 500 1000)
+
+let _ =
+    let w = initscr () in
+    assert(nodelay w true);
+    assert(keypad w true);
+    assert (start_color ());
+    assert (cbreak ());
+    assert (noecho ())
+
+let cree_paires () =
+    let paires = Array.make_matrix ncolors ncolors 0 in
+    let p = ref 10 in
+    for i = 0 to ncolors-1 do
+        for j = 0 to ncolors-1 do
+            assert(init_pair !p i j);
+            paires.(i).(j) <- !p;
+            incr p
+        done
+    done;
+    paires
+
+let paires = 
+    (* cree des couleurs et toutes les paires *)
+    cree_couleurs ();
+    cree_paires ()
+
+let couleur texte fond =
+    attron (A.color_pair paires.(texte).(fond))
+
+(* affiche un pixel *)
+let putpixel col x y =
+    couleur col col;
+    assert (mvaddch y x (int_of_char ' '))
+
+(* on peut alors dessiner directement *)
+let ligne_horiz col x1 x2 y =
+    for x = x1 to x2 do
+        putpixel col x y
+    done
+
+let ligne_vert col x y1 y2 =
+    for y = y1 to y2 do
+        putpixel col x y
+    done
+
+let boite col x1 y1 x2 y2 =
+    ligne_horiz col x1 x2 y1;
+    ligne_horiz col x1 x2 y2;
+    ligne_vert col x1 y1 y2;
+    ligne_vert col x2 y1 y2
+
+let _ =
+    let w = initscr () in
+    assert(nodelay w true);
+    assert(keypad w true);
+    assert (start_color ());
+    assert (cbreak ());
+    assert (noecho ())
+
 type joueur = {
     mutable hp : int;
     mutable hp_max : int;
@@ -15,7 +97,6 @@ let read =
     "10000"
 
 let load_level (level : int) : string list=
-    
     let nom_dossier = ref "levels/level" in
     nom_dossier := !nom_dossier ^ (string_of_int level);
     nom_dossier := !nom_dossier ^ ".txt";
@@ -66,7 +147,7 @@ let modif_touche i=
 let verif_tile tab joueur= 
     let touche = getch () in
     let touch = ref 0 in
-    let new_tab =  (String.to_bytes(tab)) in
+    let new_tab =  (String.to_bytes tab) in
     if touche >= 0
     then begin
     for i=0 to Bytes.length(new_tab) - 1 do 
@@ -81,3 +162,49 @@ let verif_tile tab joueur=
     end;
     if !touch = 1 then hit joueur else fail joueur
 
+
+
+let _ =
+    let running = ref true in
+    let state = ref 't' in
+
+    let ch = ref 0 in
+
+    
+    attroff(A.color);
+    (* ----------- main loop ---------- *)
+    while !running do
+    try
+        clear();
+        let h, w = get_size () in
+     
+        
+        if !state = 't' then begin
+        
+            couleur blanc noir;
+            ignore (mvaddstr (h/2) (w/2) (Printf.sprintf "Tinc main %d title" !ch));
+        
+        end;
+        
+        Unix.sleepf 0.05;
+        ignore(refresh());
+
+        let c = getch () in
+        if c >= 0 then begin
+            match c with
+            | 27 -> running := false;
+            | 32 -> if !state = 't' then state := 'l'
+            else ()
+            | _ -> ()
+            
+        end;
+        if c <> -1 then ch := c;
+
+
+        
+    with _ -> running := false;
+    done;
+    
+    
+    endwin ()
+    
