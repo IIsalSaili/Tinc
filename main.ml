@@ -10,6 +10,7 @@ let vert = rouge_clair+1
 let vert_clair = vert+1
 let bleu = vert_clair+1
 let bleu_clair = bleu+1
+(*lol*)
 
 let ncolors = bleu_clair + 1
 
