@@ -163,7 +163,6 @@ let verif_tile tab joueur=
     end;
     if !touch = 1 then hit joueur else fail joueur
 
-
 let _ =
     let running = ref true in
     let state = ref 't' in
