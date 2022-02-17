@@ -128,6 +128,8 @@ let hit joueur=
     joueur.score_streak <- (joueur.score_streak + 1);
     if joueur.hp >550 then ajout := 0 else ajout := 50;
     joueur.hp <- (joueur.hp + !ajout)
+    (*tab = List.iter (fun x -> x!= "00000") tab*)
+
 
 let fail joueur = 
     (*La fonction qui agit quand le joueur fait une erreur*)
@@ -148,14 +150,14 @@ let modif_touche i=
 let verif_tile tab joueur= 
     let touche = getch () in
     let touch = ref 0 in
-    let new_tab =  (String.to_bytes tab) in
+    let new_liste =  (String.to_bytes (List.hd tab)) in
     if touche >= 0
     then begin
-    for i=0 to Bytes.length(new_tab) - 1 do 
-        match tab.[i] with
+    for i=0 to Bytes.length(new_liste) - 1 do 
+        match (List.hd tab).[i] with
         |'1' -> if modif_touche i = touche then
          begin
-            Bytes.set new_tab i '0';
+            Bytes.set new_liste i '0';
             touch := 1;
         end
         |_ -> if modif_touche i = touche then touch :=2
@@ -172,7 +174,6 @@ let affichage_tab tab size=
             ignore (mvaddstr (h/2-2*i) (w/2-8) (Printf.sprintf "%s" hd));
         done;
         end
-    
 
 
 let _ =
