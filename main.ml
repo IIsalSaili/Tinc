@@ -138,12 +138,12 @@ let fail joueur =
 
 let modif_touche i= 
     match i with 
-    |0 -> 'g'
-    |1 -> 'h'
-    |2 -> 'j'
-    |3 -> 'k'
-    |4 -> 'l'
-    |_ -> '@'
+    |0 -> 103
+    |1 -> 104
+    |2 -> 105
+    |3 -> 106
+    |4 -> 107
+    |_ -> 160
 
 let verif_tile tab joueur= 
     let touche = getch () in
@@ -153,12 +153,12 @@ let verif_tile tab joueur=
     then begin
     for i=0 to Bytes.length(new_tab) - 1 do 
         match tab.[i] with
-        |'1' -> if modif_touche i = char_of_int(touche) then
+        |'1' -> if modif_touche i = touche then
          begin
             Bytes.set new_tab i '0';
             touch := 1;
         end
-        |_ -> if modif_touche i = char_of_int(touche) then touch :=2
+        |_ -> if modif_touche i = touche then touch :=2
     done;
     end;
     if !touch = 1 then hit joueur else fail joueur
@@ -201,6 +201,14 @@ let _ =
             ignore (mvaddstr (h/2) (w/2) (Printf.sprintf "level 2"));
 
         end;
+        end; 
+        
+        (*if !state = 'l' then begin
+            couleur blanc noir;
+            ignore (boite blanc (w/2-w/4) (h/2-h/4) (w/2-w/4+40) (h/2-h/4+40));
+        end;*)
+        (*J'arrive pas à faire marcher le truc au dessus, si t'y arrives gg je comprends pas pourquoi celui là marche pas et le tien oui*)
+
 
         Unix.sleepf 0.05;
         ignore(refresh());
