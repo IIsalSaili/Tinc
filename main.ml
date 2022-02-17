@@ -121,22 +121,29 @@ let lose joueur=
 let win joueur=
     Printf.sprintf "Victoire ! Score atteint : %d", joueur.score
 
-let hit joueur= 
+let rec manual_tri tab =
+    match tab with
+    |t::q -> if t = "00000" then q else manual_tri q
+    |[] -> []
+
+let hit joueur tab= 
     (*La fonction qui agit quand le joueur marque un point*)
     let ajout = ref 0 in
     joueur.score <- joueur.score + 100 * joueur.score_streak;
     joueur.score_streak <- (joueur.score_streak + 1);
     if joueur.hp >550 then ajout := 0 else ajout := 50;
-    joueur.hp <- (joueur.hp + !ajout)
-    (*tab = List.iter (fun x -> x!= "00000") tab*)
+    joueur.hp <- (joueur.hp + !ajout);
+    manual_tri tab
 
 
-let fail joueur = 
+let fail joueur tab : string list = 
     (*La fonction qui agit quand le joueur fait une erreur*)
-    match joueur.hp with
-    | x when x >80 -> joueur.hp <- (joueur.hp - 80)
-    | _ -> lose joueur;
-    joueur.hp <- (joueur.hp - 80)
+    begin
+      if joueur.hp>80 then joueur.hp <- (joueur.hp - 80) 
+      else
+        joueur.hp <- (joueur.hp - 80)
+     end;
+        manual_tri tab
 
 let modif_touche i= 
     match i with 
@@ -163,7 +170,7 @@ let verif_tile tab joueur=
         |_ -> if modif_touche i = touche then touch :=2
     done;
     end;
-    if !touch = 1 then hit joueur else fail joueur
+    if !touch = 1 then hit joueur tab else fail joueur tab
 
 let affichage_tab tab size=
     couleur bleu noir;
