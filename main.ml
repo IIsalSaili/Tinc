@@ -56,7 +56,7 @@ let couleur texte fond =
 (* affiche un pixel *)
 let putpixel col x y =
     couleur col col;
-    assert (mvaddch y x (int_of_char ' '))
+    ignore(mvaddch y x (int_of_char ' '))
 
 (* on peut alors dessiner directement *)
 let ligne_horiz col x1 x2 y =
@@ -184,6 +184,7 @@ let _ =
         if !state = 't' then begin
 
             couleur blanc noir;
+            
             couleur rouge noir;
             ignore (mvaddstr (h/2-2) (w/2-8) (Printf.sprintf "Tinc main %3d title" !ch));
             couleur blanc noir;
@@ -200,13 +201,11 @@ let _ =
             if !selection = 2 then couleur vert noir else couleur blanc noir;
             ignore (mvaddstr (h/2) (w/2) (Printf.sprintf "level 2"));
 
-        end;
-        end; 
-        
-        (*if !state = 'l' then begin
             couleur blanc noir;
-            ignore (boite blanc (w/2-w/4) (h/2-h/4) (w/2-w/4+40) (h/2-h/4+40));
-        end;*)
+            boite blanc (h/2-h/4) (w/2-w/4) (w/2-w/4) (h/2-h/4);
+
+        end;
+        
         (*J'arrive pas à faire marcher le truc au dessus, si t'y arrives gg je comprends pas pourquoi celui là marche pas et le tien oui*)
 
 
@@ -229,7 +228,12 @@ let _ =
 
 
         
-    with _ -> running := false;
+    with e -> begin 
+        
+        running := false;
+        let s = Printexc.to_string e in
+        Printf.printf "%s" s;
+        end;
     done;
     
     
