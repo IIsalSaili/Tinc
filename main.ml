@@ -184,9 +184,14 @@ let _ =
             ignore (mvaddstr (h/2-2) (w/2-8) (Printf.sprintf "Tinc main %3d title" !ch));
             ignore (mvaddstr (h/2) (w/2-10) (Printf.sprintf "Press space to continue"));
         
-        end;
-
+        end; 
         
+        (*if !state = 'l' then begin
+            couleur blanc noir;
+            ignore (boite blanc (w/2-w/4) (h/2-h/4) (w/2-w/4+40) (h/2-h/4+40));
+        end;*)
+        (*J'arrive pas à faire marcher le truc au dessus, si t'y arrives gg je comprends pas pourquoi celui là marche pas et le tien oui*)
+
 
         Unix.sleepf 0.05;
         ignore(refresh());
