@@ -183,18 +183,12 @@ let _ =
         
         if !state = 't' then begin
 
-            couleur blanc noir;
-            
             couleur rouge noir;
             ignore (mvaddstr (h/2-2) (w/2-8) (Printf.sprintf "Tinc main %3d title" !ch));
             couleur blanc noir;
             ignore (mvaddstr (h/2) (w/2-10) (Printf.sprintf "Press space to continue"));
         
-<<<<<<< HEAD
-        end; 
 
-        (*if !state = 'l' then begin
-=======
         end
         else if !state = 'l' then begin
             couleur rouge noir;
@@ -206,14 +200,12 @@ let _ =
             if !selection = 2 then couleur vert noir else couleur blanc noir;
             ignore (mvaddstr (h/2) (w/2) (Printf.sprintf "level 2"));
 
->>>>>>> 02f0c8cbf9bb5f8cda130aa787dfac197973da88
             couleur blanc noir;
             boite blanc (h/2-h/4) (w/2-w/4) (w/2-w/4) (h/2-h/4);
 
         end;
         
-        (*J'arrive pas à faire marcher le truc au dessus, si t'y arrives gg je comprends pas pourquoi celui là marche pas et le tien oui*)
-
+        
 
         Unix.sleepf 0.05;
         ignore(refresh());
