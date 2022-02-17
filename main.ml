@@ -163,10 +163,13 @@ let verif_tile tab joueur=
     end;
     if !touch = 1 then hit joueur else fail joueur
 
+
 let _ =
+    let nb_levels = 2 in
     let running = ref true in
     let state = ref 't' in
 
+    let selection = ref 1 in
     let ch = ref 0 in
 
     
@@ -179,11 +182,24 @@ let _ =
      
         
         if !state = 't' then begin
-        
+
             couleur blanc noir;
+            couleur rouge noir;
             ignore (mvaddstr (h/2-2) (w/2-8) (Printf.sprintf "Tinc main %3d title" !ch));
+            couleur blanc noir;
             ignore (mvaddstr (h/2) (w/2-10) (Printf.sprintf "Press space to continue"));
         
+        end
+        else if !state = 'l' then begin
+            couleur rouge noir;
+            ignore (mvaddstr (h/2-4) (w/2-8) (Printf.sprintf "Choose your level"));
+            
+            if !selection = 1 then couleur vert noir else couleur blanc noir;
+            ignore (mvaddstr (h/2) (w/2-8) (Printf.sprintf "level 1"));
+                
+            if !selection = 2 then couleur vert noir else couleur blanc noir;
+            ignore (mvaddstr (h/2) (w/2) (Printf.sprintf "level 2"));
+
         end;
 
         Unix.sleepf 0.05;
@@ -193,8 +209,11 @@ let _ =
         if c >= 0 then begin
             match c with
             | 27 -> running := false;
+
             | 32 -> if !state = 't' then state := 'l'
             else ()
+    (*left*)| 260 -> if !state = 'l' && !selection > 1 then selection := !selection -1
+   (*right*)| 261 -> if !state = 'l' && !selection < nb_levels then selection := !selection +1
             | _ -> ()
             
         end;
