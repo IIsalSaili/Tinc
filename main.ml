@@ -230,7 +230,7 @@ let _ =
         
         running := false;
         let s = Printexc.to_string e in
-        Printf.printf "%s" s;
+        Printf.printf "%s\n" s;
         end;
     done;
     
