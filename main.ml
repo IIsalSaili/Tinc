@@ -163,6 +163,17 @@ let verif_tile tab joueur=
     end;
     if !touch = 1 then hit joueur else fail joueur
 
+let affichage_tab tab size=
+    couleur bleu noir;
+    let h, w = get_size () in
+    if size > 6 then begin
+        for i= 0 to 5 do
+            let hd = List.nth tab i in
+            ignore (mvaddstr (h/2-2*i) (w/2-8) (Printf.sprintf "%s" hd));
+        done;
+        end
+    
+
 
 let _ =
     let nb_levels = 2 in
@@ -200,6 +211,9 @@ let _ =
             if !selection = 2 then couleur vert noir else couleur blanc noir;
             ignore (mvaddstr (h/2) (w/2) (Printf.sprintf "level 2"));
 
+        end
+        else if !state = '1' then begin
+            affichage_tab ["10000";"01000";"10000";"01000";"01000";"10000";"01000";"01000"] 8;
         end;
         
         
@@ -216,6 +230,7 @@ let _ =
             else ()
     (*left*)| 260 -> if !state = 'l' && !selection > 1 then selection := !selection -1
    (*right*)| 261 -> if !state = 'l' && !selection < nb_levels then selection := !selection +1
+  (*valide*)| 10 -> if !state = 'l' && !selection = 1  then state := '1'
             | _ -> ()
             
         end;
