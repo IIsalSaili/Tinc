@@ -138,12 +138,12 @@ let fail joueur =
 
 let modif_touche i= 
     match i with 
-    |0 -> 'g'
-    |1 -> 'h'
-    |2 -> 'j'
-    |3 -> 'k'
-    |4 -> 'l'
-    |_ -> '@'
+    |0 -> 103
+    |1 -> 104
+    |2 -> 105
+    |3 -> 106
+    |4 -> 107
+    |_ -> 160
 
 let verif_tile tab joueur= 
     let touche = getch () in
