@@ -185,7 +185,7 @@ let _ =
             ignore (mvaddstr (h/2) (w/2-10) (Printf.sprintf "Press space to continue"));
         
         end; 
-        
+
         (*if !state = 'l' then begin
             couleur blanc noir;
             ignore (boite blanc (w/2-w/4) (h/2-h/4) (w/2-w/4+40) (h/2-h/4+40));
