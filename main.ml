@@ -200,9 +200,6 @@ let _ =
             if !selection = 2 then couleur vert noir else couleur blanc noir;
             ignore (mvaddstr (h/2) (w/2) (Printf.sprintf "level 2"));
 
-            couleur blanc noir;
-            boite blanc (h/2-h/4) (w/2-w/4) (w/2-w/4) (h/2-h/4);
-
         end;
         
         
