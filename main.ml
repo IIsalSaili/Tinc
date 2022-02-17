@@ -153,12 +153,12 @@ let verif_tile tab joueur=
     then begin
     for i=0 to Bytes.length(new_tab) - 1 do 
         match tab.[i] with
-        |'1' -> if modif_touche i = char_of_int(touche) then
+        |'1' -> if modif_touche i = touche then
          begin
             Bytes.set new_tab i '0';
             touch := 1;
         end
-        |_ -> if modif_touche i = char_of_int(touche) then touch :=2
+        |_ -> if modif_touche i = touche then touch :=2
     done;
     end;
     if !touch = 1 then hit joueur else fail joueur
@@ -185,6 +185,8 @@ let _ =
             ignore (mvaddstr (h/2) (w/2-10) (Printf.sprintf "Press space to continue"));
         
         end;
+
+        
 
         Unix.sleepf 0.05;
         ignore(refresh());
