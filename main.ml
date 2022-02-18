@@ -14,6 +14,8 @@ let bleu_clair = bleu+1
 
 let ncolors = bleu_clair + 1
 
+let _ = Random.init (int_of_float (Unix.gettimeofday ()))
+
 let cree_couleurs () =
     assert(init_color noir 0 0 0);
     assert(init_color gris 500 500 500);
@@ -89,6 +91,35 @@ type joueur = {
     mutable score : int;
     mutable score_streak : int;
 }
+
+type particule = {
+    mutable x : int;
+    mutable y : int;
+    mutable speed : int;
+    mutable color : int;
+    mutable compteur : int;
+}
+
+let particule x speed col = { x = x; y = 9999; speed = speed; color = col; compteur = 0}
+
+let tick_particules (particules: particule array ref) =
+    let h,w = get_size() in
+    for i = 0 to Array.length !particules - 1 do
+        !particules.(i).compteur <- !particules.(i).compteur +1;
+
+        if !particules.(i).compteur >= !particules.(i).speed then begin
+            !particules.(i).compteur <- 0;
+            !particules.(i).y <- !particules.(i).y +1;
+
+            if !particules.(i).y > h then begin
+                !particules.(i).y <- 0;
+                !particules.(i).x <- (Random.int 9999) mod w;
+     (*couleur*)!particules.(i).color <- ((Random.int 9999) mod (ncolors-1)) +1;
+                
+            end;
+        end;
+        putpixel !particules.(i).color !particules.(i).x !particules.(i).y;
+    done
 
 let actual = ref 0
 
@@ -190,15 +221,19 @@ let affichage_end_level result joueur =
     let h, w = get_size () in
     if result = "lose" then begin
         couleur rouge noir;
-        ignore (mvaddstr (h/2) (w/2-8) (Printf.sprintf "YOU LOSE, final score : \n well, it doesn't really matter you lost anyway-"));
+        ignore (mvaddstr (h/2) (w/2-18) (Printf.sprintf "YOU LOSE, final score : \n well, it doesn't really matter you lost anyway-"));
     end
     else begin
         couleur vert noir;
         ignore (mvaddstr (h/2) (w/2-8) (Printf.sprintf "YOU WON, final score : %d" joueur.score))
     end 
 
+(* ------------------------------------------ MAIN FUNCTION --------------------------------- *)
+
 let _ =
     (* variables generales *)
+    let h, w = get_size () in
+    ignore (h);
     let nb_levels = 2 in
     let running = ref true in
     let state = ref 't' in
@@ -207,6 +242,8 @@ let _ =
         joueur.hp <- joueur.hp +1;
 
     let selection = ref 1 in
+
+    let particules = ref [|(particule (Random.int w) (Random.int 7) ((Random.int (ncolors -1))+1))|] in
 
     (* variables temporaires *)
     let ch = ref 0 in
@@ -218,17 +255,20 @@ let _ =
     let result = ref "lose" in
     let next = ref false in
 
-    
+    let com_particules = ref 0 in
     attroff(A.color);
     (* ----------- main loop ---------- *)
     while !running do
     try
         clear();
         let h, w = get_size () in
-        
-        (*cette ligne sert à rien c'est juste pour pas avoir de bug
-        pendant que je fais mes tests*)
-        
+
+        if !com_particules < w/2 then begin
+            particules := Array.append !particules [|(particule (Random.int w) (Random.int 7) ((Random.int (ncolors -1))+1))|];
+            com_particules := !com_particules +1;
+        end;
+        tick_particules particules;
+
         if !state = 't' then begin
 
             couleur rouge noir;
