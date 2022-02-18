@@ -114,7 +114,7 @@ let tick_particules (particules: particule array ref) =
             if !particules.(i).y > h then begin
                 !particules.(i).y <- 0;
                 !particules.(i).x <- (Random.int 9999) mod w;
-     (*couleur*)!particules.(i).color <- ((Random.int 9999) mod (ncolors-1)) +1;
+     (*couleur*)!particules.(i).color <- ((Random.int 9999) mod (ncolors-2)) +1;
                 
             end;
         end;
