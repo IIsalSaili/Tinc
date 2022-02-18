@@ -154,9 +154,9 @@ let modif_touche i=
     |4 -> 107
     |_ -> 160
 
-let verif_tile tab joueur= 
+let verif_tile tab joueur next= 
     let touche = getch () in
-    let touch = ref 0 in
+    let touch = ref 0 in 
     let new_liste =  (String.to_bytes (List.hd tab)) in
     if touche >= 0
     then begin
@@ -166,8 +166,12 @@ let verif_tile tab joueur=
          begin
             Bytes.set new_liste i '0';
             touch := 1;
+            next := true;
         end
-        |_ -> if modif_touche i = touche then touch :=2
+        |_ -> if modif_touche i = touche then begin
+            touch :=2;
+            next :=true;
+        end
     done;
     end;
     if !touch = 1 then hit joueur tab else fail joueur tab
@@ -197,13 +201,17 @@ let affichage_end_level result joueur =
 let rec gameplay_level tab id_level joueur= 
     let h, w = get_size () in
     let result = ref "lose" in
+    let next = ref false in 
     ignore (mvaddstr (h/2-10) (w/2-4) (Printf.sprintf "Level %d" id_level));
     match tab with 
     |[] -> affichage_end_level !result joueur
     |_ -> begin
         affichage_tab tab (List.length tab);
-        gameplay_level (verif_tile tab joueur) id_level joueur;
-        affichage_tab tab (List.length tab)
+        (*le soucis est ici*)
+        let new_tab = verif_tile tab joueur next in
+        if !next = true then gameplay_level new_tab id_level joueur;
+        clear();
+        affichage_tab new_tab (List.length new_tab)
     end
 
 let _ =
@@ -247,8 +255,8 @@ let _ =
 
         end
         else if !state = '1' then begin
-            gameplay_level [] 1 joueur;
-            (*gameplay_level ["10000";"01000";"10000";"01000";"01000";"10000";"01000";"01000"] 1 joueur;*)
+            (*gameplay_level [] 1 joueur;*)
+            gameplay_level ["10000";"01000";"10000";"01000";"01000";"10000";"01000";"01000"] 1 joueur;
         end;
         
         
