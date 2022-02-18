@@ -180,7 +180,7 @@ let affichage_tab tab size=
     couleur bleu noir;
     let h, w = get_size () in
     if size > 6 then begin
-        for i= 0 to 5 do
+        for i= 1 to 5 do
             let hd = List.nth tab i in
             ignore (mvaddstr (6+h/2-2*i) (5+w/2-8) (Printf.sprintf "%s" hd));
         done;
@@ -190,37 +190,33 @@ let affichage_end_level result joueur =
     let h, w = get_size () in
     if result = "lose" then begin
         couleur rouge noir;
-        ignore (mvaddstr (h/2) (w/2-8) (Printf.sprintf "YOU LOSE, final score : \n well it doesn't really matter you lost anyway-"));
+        ignore (mvaddstr (h/2) (w/2-8) (Printf.sprintf "YOU LOSE, final score : \n well, it doesn't really matter you lost anyway-"));
     end
     else begin
         couleur vert noir;
         ignore (mvaddstr (h/2) (w/2-8) (Printf.sprintf "YOU WON, final score : %d" joueur.score))
-    end
-
-
-let rec gameplay_level tab id_level joueur= 
-    let h, w = get_size () in
-    let result = ref "lose" in
-    let next = ref false in 
-    ignore (mvaddstr (h/2-10) (w/2-4) (Printf.sprintf "Level %d" id_level));
-    match tab with 
-    |[] -> affichage_end_level !result joueur
-    |_ -> begin
-        affichage_tab tab (List.length tab);
-        (*le soucis est ici*)
-        let new_tab = verif_tile tab joueur next in
-        if !next = true then gameplay_level new_tab id_level joueur;
-        clear();
-        affichage_tab new_tab (List.length new_tab)
-    end
+    end 
 
 let _ =
+    (* variables generales *)
     let nb_levels = 2 in
     let running = ref true in
     let state = ref 't' in
 
+    let joueur = (player 549 0) in
+        joueur.hp <- joueur.hp +1;
+
     let selection = ref 1 in
+
+    (* variables temporaires *)
     let ch = ref 0 in
+    
+    (* variables level *)
+    let in_game = ref false in
+
+    let tab = ref [] in
+    let result = ref "lose" in
+    let next = ref false in
 
     
     attroff(A.color);
@@ -229,8 +225,7 @@ let _ =
     try
         clear();
         let h, w = get_size () in
-        let joueur = (player 549 0) in
-        joueur.hp <- joueur.hp +1;
+        
         (*cette ligne sert à rien c'est juste pour pas avoir de bug
         pendant que je fais mes tests*)
         
@@ -254,9 +249,30 @@ let _ =
             ignore (mvaddstr (h/2) (w/2) (Printf.sprintf "level 2"));
 
         end
-        else if !state = '1' then begin
-            (*gameplay_level [] 1 joueur;*)
-            gameplay_level ["10000";"01000";"10000";"01000";"01000";"10000";"01000";"01000"] 1 joueur;
+        else if !state = 'g' then begin
+            if not !in_game then begin
+
+                tab := load_level !selection;
+
+            end else begin
+                (* level loop *)
+                try
+                (*
+                    ------------ souci -------------
+                    let hd = List.hd !tab in
+                    
+                    (*le soucis est ici*)
+                    tab := verif_tile !tab joueur next;
+                    if !next = true then tab := List.tl !tab;
+
+                    *)
+                    affichage_tab !tab (List.length !tab);
+
+                    ignore (mvaddstr (h/2-10) (w/2-4) (Printf.sprintf "Level %d" !selection));
+                with Failure -> affichage_end_level !result joueur
+
+                
+            end;
         end;
         
         
@@ -268,12 +284,10 @@ let _ =
         if c >= 0 then begin
             match c with
             | 27 -> running := false;
-
             | 32 -> if !state = 't' then state := 'l'
-            else ()
     (*left*)| 260 -> if !state = 'l' && !selection > 1 then selection := !selection -1
    (*right*)| 261 -> if !state = 'l' && !selection < nb_levels then selection := !selection +1
-  (*valide*)| 10 -> if !state = 'l' && !selection = 1  then state := '1'
+  (*valide*)| 10 -> if !state = 'l' then state := 'g';
             | _ -> ()
             
         end;
@@ -282,10 +296,8 @@ let _ =
 
         
     with e -> begin 
-        
         running := false;
-        let s = Printexc.to_string e in
-        Printf.printf "%s\n" s;
+        Printf.printf "%s\n" (Printexc.to_string e);
         end;
     done;
     
