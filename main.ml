@@ -330,10 +330,11 @@ let _ =
         if c >= 0 then begin
             match c with
             | 27 -> running := false;
-            | 32 -> if !state = 't' then state := 'l'
+  (*espace*)| 32 -> if !state = 't' then state := 'l'
+               else if !state = 'l' then state := 'g' 
     (*left*)| 260 -> if !state = 'l' && !selection > 1 then selection := !selection -1
    (*right*)| 261 -> if !state = 'l' && !selection < nb_levels then selection := !selection +1
-  (*valide*)| 10 -> if !state = 'l' then state := 'g';
+   (*enter*)| 10 -> if !state = 'l' then state := 'g';
             | _ -> ()
             
         end;
