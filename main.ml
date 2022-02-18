@@ -178,10 +178,26 @@ let affichage_tab tab size=
     if size > 6 then begin
         for i= 0 to 5 do
             let hd = List.nth tab i in
-            ignore (mvaddstr (h/2-2*i) (w/2-8) (Printf.sprintf "%s" hd));
+            ignore (mvaddstr (6+h/2-2*i) (5+w/2-8) (Printf.sprintf "%s" hd));
         done;
         end
+        
+let affichage_end_level result joueur = 
+    let h, w = get_size () in
+    if result = "lose" then begin
+        couleur rouge noir;
+        ignore (mvaddstr (h/2) (w/2-8) (Printf.sprintf "YOU LOSE, final score : \n well it doesn't really matter you lost anyway-"));
+    end
+    else begin
+        couleur vert noir;
+        ignore (mvaddstr (h/2) (w/2-8) (Printf.sprintf "YOU WON, final score : %d" joueur.score))
+    end
 
+
+let gameplay_level tab id_level joueur= 
+    let h, w = get_size () in
+    ignore (mvaddstr (h/2-10) (w/2-4) (Printf.sprintf "Level %d" id_level));
+    if (List.length tab) >0 then affichage_tab tab (List.length tab) else affichage_end_level "lose" joueur
 
 let _ =
     let nb_levels = 2 in
@@ -198,7 +214,10 @@ let _ =
     try
         clear();
         let h, w = get_size () in
-     
+        let joueur = (player 549 0) in
+        joueur.hp <- joueur.hp +1;
+        (*cette ligne sert à rien c'est juste pour pas avoir de bug
+        pendant que je fais mes tests*)
         
         if !state = 't' then begin
 
@@ -221,7 +240,8 @@ let _ =
 
         end
         else if !state = '1' then begin
-            affichage_tab ["10000";"01000";"10000";"01000";"01000";"10000";"01000";"01000"] 8;
+            gameplay_level [] 1 joueur;
+            (*gameplay_level ["10000";"01000";"10000";"01000";"01000";"10000";"01000";"01000"] 1 joueur;*)
         end;
         
         
