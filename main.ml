@@ -181,7 +181,7 @@ let affichage_tab tab size=
             ignore (mvaddstr (6+h/2-2*i) (5+w/2-8) (Printf.sprintf "%s" hd));
         done;
         end
-        
+
 let affichage_end_level result joueur = 
     let h, w = get_size () in
     if result = "lose" then begin
@@ -194,10 +194,17 @@ let affichage_end_level result joueur =
     end
 
 
-let gameplay_level tab id_level joueur= 
+let rec gameplay_level tab id_level joueur= 
     let h, w = get_size () in
+    let result = ref "lose" in
     ignore (mvaddstr (h/2-10) (w/2-4) (Printf.sprintf "Level %d" id_level));
-    if (List.length tab) >0 then affichage_tab tab (List.length tab) else affichage_end_level "lose" joueur
+    match tab with 
+    |[] -> affichage_end_level !result joueur
+    |_ -> begin
+        affichage_tab tab (List.length tab);
+        gameplay_level (verif_tile tab joueur) id_level joueur;
+        affichage_tab tab (List.length tab)
+    end
 
 let _ =
     let nb_levels = 2 in
