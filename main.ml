@@ -259,9 +259,11 @@ let _ =
                 try
                 (*
                     ------------ souci -------------
+                    (c'est de la m... ce que j'ai écrit la)
+
+                    
                     let hd = List.hd !tab in
                     
-                    (*le soucis est ici*)
                     tab := verif_tile !tab joueur next;
                     if !next = true then tab := List.tl !tab;
 
