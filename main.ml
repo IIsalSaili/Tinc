@@ -261,17 +261,21 @@ let _ =
                     ------------ souci -------------
                     (c'est de la m... ce que j'ai écrit la)
 
-                    
+
                     let hd = List.hd !tab in
                     
                     tab := verif_tile !tab joueur next;
                     if !next = true then tab := List.tl !tab;
 
-                    *)
+                    *)  
+                    ignore (next);
                     affichage_tab !tab (List.length !tab);
 
                     ignore (mvaddstr (h/2-10) (w/2-4) (Printf.sprintf "Level %d" !selection));
-                with Failure -> affichage_end_level !result joueur
+                with Failure a -> begin 
+                affichage_end_level !result joueur; 
+                ignore a;
+                end;
 
                 
             end;
