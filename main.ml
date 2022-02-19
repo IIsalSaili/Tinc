@@ -202,7 +202,7 @@ let verif_tile tab joueur next=
     else if !touch = 1 then hit joueur tab 
     else fail joueur tab
 
-let affichage_tab tab size=
+let affichage_tab tab size selection=
     couleur bleu noir;
     clear();
     let h, w = get_size () in
@@ -211,7 +211,8 @@ let affichage_tab tab size=
             let hd = List.nth tab i in
             ignore (mvaddstr (6+h/2-2*i) (5+w/2-8) (Printf.sprintf "%s" hd));
         done;
-        end
+        end;
+    ignore (mvaddstr (h/2-10) (w/2-4) (Printf.sprintf "Level %d" selection))
 
 let affichage_end_level result joueur = 
     let h, w = get_size () in
@@ -306,11 +307,10 @@ let _ =
                     if !next = true then tab := List.tl !tab;
 
                     *)  
-                    affichage_tab !tab (List.length !tab);
+                    affichage_tab !tab (List.length !tab) !selection;
                     tab := verif_tile !tab joueur next;
-                    if !next = true then affichage_tab !tab (List.length !tab);
+                    if !next = true then affichage_tab !tab (List.length !tab) !selection;
 
-                    ignore (mvaddstr (h/2-10) (w/2-4) (Printf.sprintf "Level %d" !selection));
                 with Failure a -> begin 
                 affichage_end_level !result joueur; 
                 ignore a;
