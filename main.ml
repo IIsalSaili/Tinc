@@ -231,7 +231,7 @@ let _ =
     (* variables generales *)
     let h, w = get_size () in
     ignore (h);
-    let nb_levels = 2 in
+    let nb_levels = 5 in
     let running = ref true in
     let state = ref 't' in
 
@@ -278,13 +278,22 @@ let _ =
         else if !state = 'l' then begin
             couleur rouge noir;
             ignore (mvaddstr (h/2-4) (w/2-8) (Printf.sprintf "Choose your level"));
-            
+
+            for i = 1 to nb_levels do
+                if !selection = i then couleur vert noir else couleur blanc noir;
+                ignore (mvaddstr (h/2) (w/2-(!selection)*8 - (nb_levels-i*8) +1 ) (Printf.sprintf "level %d" i));
+            done;
+
+
+
+            (*
             if !selection = 1 then couleur vert noir else couleur blanc noir;
             ignore (mvaddstr (h/2) (w/2-8) (Printf.sprintf "level 1"));
                 
             if !selection = 2 then couleur vert noir else couleur blanc noir;
             ignore (mvaddstr (h/2) (w/2) (Printf.sprintf "level 2"));
 
+            *)
         end
         else if !state = 'g' then begin
             if not !in_game then begin
