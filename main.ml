@@ -285,15 +285,6 @@ let _ =
             done;
 
 
-
-            (*
-            if !selection = 1 then couleur vert noir else couleur blanc noir;
-            ignore (mvaddstr (h/2) (w/2-8) (Printf.sprintf "level 1"));
-                
-            if !selection = 2 then couleur vert noir else couleur blanc noir;
-            ignore (mvaddstr (h/2) (w/2) (Printf.sprintf "level 2"));
-
-            *)
         end
         else if !state = 'g' then begin
             if not !in_game then begin
@@ -321,8 +312,8 @@ let _ =
                     if !next = true then affichage_tab !tab (List.length !tab) !selection;
 
                 with Failure a -> begin 
-                affichage_end_level !result joueur; 
-                ignore a;
+                    affichage_end_level !result joueur; 
+                    ignore a;
                 end;
 
                 
