@@ -264,7 +264,7 @@ let _ =
     (* variables generales *)
     let h, w = get_size () in
     ignore (h);
-    let nb_levels = 5 in
+    let nb_levels = 3 in
     let running = ref true in
     let state = ref 't' in
     let touche = ref 0 in
