@@ -90,7 +90,10 @@ type joueur = {
     mutable hp_max : int;
     mutable score : int;
     mutable score_streak : int;
+    mutable state : char;
 }
+
+let player hp score= {hp = hp; hp_max=hp; score = score; score_streak = 0; state = 'a'}
 
 type particule = {
     mutable x : int;
@@ -121,8 +124,6 @@ let tick_particules (particules: particule array ref) =
         putpixel !particules.(i).color !particules.(i).x !particules.(i).y;
     done
 
-let player hp score= {hp = hp; hp_max=hp; score = score; score_streak = 0}
-
 let affichage_end_level result joueur = 
     let h, w = get_size () in
     if result = "lose" then begin
@@ -141,7 +142,7 @@ let load_level (level : int) : string list=
     
     let lignes = ref [] in
     let file = open_in !nom_dossier in
-    
+
     try
         while true do
             lignes := input_line file :: !lignes
@@ -156,24 +157,41 @@ let manual_tri tab =
     |t::q -> if t = "00000" then q else tab
     |[] -> []
 
-let hit joueur tab= 
+let hit (joueur : joueur ref) = 
     (*La fonction qui agit quand le joueur marque un point*)
     let ajout = ref 0 in
-    joueur.score <- joueur.score + 100 * joueur.score_streak;
-    joueur.score_streak <- (joueur.score_streak + 1);
-    if joueur.hp >550 then ajout := 0 else ajout := 50;
-    joueur.hp <- (joueur.hp + !ajout);
-    manual_tri tab
+    !joueur.score <- !joueur.score + 100 * !joueur.score_streak;
+    !joueur.score_streak <- (!joueur.score_streak + 1);
+    if !joueur.hp >550 then ajout := 0 else ajout := 50;
+    !joueur.hp <- (!joueur.hp + !ajout)
+    (*manual_tri tab*)
 
-
-let fail joueur tab : string list = 
+let fail (joueur : joueur ref) =
     (*La fonction qui agit quand le joueur fait une erreur*)
     begin
-      if joueur.hp>80 then joueur.hp <- (joueur.hp - 80) 
+      if !joueur.hp>80 then !joueur.hp <- (!joueur.hp - 80) 
       else
-      affichage_end_level "lose" joueur
-     end;
-        manual_tri tab
+      !joueur.state <- 'm';
+     end
+
+let touche_valide touche : bool =
+    match touche with
+    | 103 -> true
+    | 104 -> true
+    | 106 -> true
+    | 107 -> true
+    | 108 -> true
+    | _   -> false
+
+let indice_of_touche touche : int =
+    match touche with
+    | 103 -> 0
+    | 104 -> 1
+    | 106 -> 2
+    | 107 -> 3
+    | 108 -> 4
+    | _   -> 999
+
 
 let modif_touche i= 
     match i with 
@@ -184,33 +202,71 @@ let modif_touche i=
     |4 -> 108
     |_ -> 160
 
-let verif_tile tab joueur touche next= 
-    let touch = ref 0 in 
-    let new_liste =  (String.to_bytes (List.hd tab)) in
+let verif_tile (tab : string list) (joueur : joueur ref) touche : string list= 
+    (*
+    let action_valide = ref false in 
+    let tete =  (String.to_bytes (List.hd tab)) in
+    *)
 
-    if touche >= 0 then begin
+    let ligne_finie = ref false in
+    let tete = ref (List.hd tab) in
+
+    if touche > 0 then begin
+
+        let tete_bytes = ref (String.to_bytes (List.hd tab)) in
+        let valide = ref false in
+        if touche_valide touche then begin
+            let i = indice_of_touche touche in
+                
+            if !tete.[i] = '1' then begin
+
+                valide := true;
+                Bytes.set !tete_bytes i '0';
+
+            end else begin
+                valide := false; (*inutile mais plus clair*)
+            end;
+        end else begin
+            valide := false; (*inutile mais plus clair*)
+        end;
         
-        for i=0 to Bytes.length(new_liste) - 1 do 
+        if !valide then begin
+            hit joueur;
+            tete := Bytes.to_string !tete_bytes;
+            if !tete = "00000" then ligne_finie := true;
+
+        end else
+            fail joueur;
+            
+        (*
+        for i=0 to Bytes.length(tete) - 1 do 
+
             match (List.hd tab).[i] with
             |'1' -> if modif_touche i = touche then
             begin
-                Bytes.set new_liste i '0';
-                touch := 1;
+                Bytes.set tete i '0';
+                action_valide := true;
                 next := true;
             end
             |_ ->begin
-                touch :=2;
+                velide := false;
                 next :=true;
             end
         done;
+        *)
     end;
+    (*
     let remise = Bytes.to_string new_liste in
-    let new_tab = [remise] @ tab in
+    let new_tab = tab @ remise in
     if !touch = 0 then tab
     else if !touch = 1 then hit joueur new_tab 
     else fail joueur new_tab
+    *)
+    if !ligne_finie then List.tl tab
+    else [!tete] @ List.tl tab
 
-let affichage_tab tab size selection=
+let affichage_tab tab selection =
+    let size = List.length tab in
     couleur bleu noir;
     clear();
     let h, w = get_size () in
@@ -221,6 +277,7 @@ let affichage_tab tab size selection=
         done;
         end;
     ignore (mvaddstr (h/2-10) (w/2-4) (Printf.sprintf "Level %d" selection))
+
 
 let print_title () =
     ligne_horiz rouge 2 15 7;
@@ -237,8 +294,8 @@ let _ =
     let state = ref 't' in
     let touche = ref 0 in
 
-    let joueur = (player 549 0) in
-        joueur.hp <- joueur.hp +1;
+    let joueur = ref (player 549 0) in
+        !joueur.hp <- !joueur.hp +1;
 
     let selection = ref 1 in
 
@@ -252,8 +309,7 @@ let _ =
 
     let tab = ref [] in
     let result = ref "lose" in
-    let next = ref false in
-    let osef = ref true in
+    (*let osef = ref true in*)
 
     let com_particules = ref 0 in
     attroff(A.color);
@@ -299,20 +355,25 @@ let _ =
 
             end else begin
                 (* level loop *)
-                try
-                
-                    if !osef = true then begin
-                    affichage_tab !tab (List.length !tab) !selection;
-                    osef:= false;
-                    end;
-                    tab := verif_tile !tab joueur !touche next;
-                    affichage_tab !tab (List.length !tab) !selection
-
-                with Failure a -> begin 
-                    affichage_end_level !result joueur; 
-                    ignore a;
+                if !joueur.state = 'a' then begin
+                    try
+                        (*
+                        if !osef = true then begin
+                        affichage_tab !tab !selection;
+                        osef:= false;
+                        end;
+                        tab := verif_tile !tab joueur !touche;
+                        affichage_tab !tab !selection;
+                        *)
+                        tab := verif_tile !tab joueur !touche;
+                        affichage_tab !tab !selection;
+                    with Failure a -> begin 
+                        affichage_end_level !result !joueur; 
+                        ignore a;
+                        end
+                end else begin
+                    affichage_end_level "lose" !joueur;
                 end;
-
                 
             end;
         end;
