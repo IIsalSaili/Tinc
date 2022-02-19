@@ -161,15 +161,19 @@ let hit (joueur : joueur ref) =
     (*La fonction qui agit quand le joueur marque un point*)
     let ajout = ref 0 in
     !joueur.score <- !joueur.score + 100 * !joueur.score_streak;
-    !joueur.score_streak <- (!joueur.score_streak + 1);
-    if !joueur.hp >550 then ajout := 0 else ajout := 50;
+    !joueur.score_streak <- !joueur.score_streak + 1;
+    if !joueur.hp >=550 then ajout := 0 else ajout := 50;
     !joueur.hp <- (!joueur.hp + !ajout)
     (*manual_tri tab*)
 
 let fail (joueur : joueur ref) =
     (*La fonction qui agit quand le joueur fait une erreur*)
     begin
-      if !joueur.hp>80 then !joueur.hp <- (!joueur.hp - 80) 
+      if !joueur.hp>80 then 
+      begin
+        !joueur.hp <- (!joueur.hp - 80);
+        !joueur.score_streak <- 0;
+      end
       else
       !joueur.state <- 'm';
      end
@@ -228,18 +232,20 @@ let affichage_tab tab selection =
     couleur bleu noir;
     clear();
     let h, w = get_size () in
-    if size > 6 then begin
-        for i= 0 to 4 do
-            let hd = List.nth tab i in
-            ignore (mvaddstr (6+h/2-2*i) (5+w/2-8) (Printf.sprintf "%s" hd));
-        done;
-        end;
+    for i= 0 to size-1 do
+        let hd = List.nth tab i in
+        ignore (mvaddstr (6+h/2-2*i) (5+w/2-8) (Printf.sprintf "%s" hd));
+    done;
     ignore (mvaddstr (h/2-10) (w/2-4) (Printf.sprintf "Level %d" selection))
 
-    let affichage_hp joueur = 
+    let affichage_hud joueur = 
         let h, w = get_size () in
         couleur rouge vert;
-        ignore (mvaddstr (h/10) (w/10) (Printf.sprintf "HP : %d" joueur.hp))
+        ignore (mvaddstr (h/10) (w/10) (Printf.sprintf "HP : %d" joueur.hp));
+        couleur bleu blanc;
+        ignore (mvaddstr (h/10) (w-20) (Printf.sprintf "Score : %d" joueur.score));
+        couleur rouge blanc;
+        ignore (mvaddstr (h-6) (w-20) (Printf.sprintf "ScoreStreak ! : X %d" joueur.score_streak))
 
 let print_title () =
     (*  let ligne_horiz col x1 x2 y =
@@ -335,7 +341,8 @@ let _ =
                     try
                         tab := verif_tile !tab joueur !touche;
                         affichage_tab !tab !selection;
-                        affichage_hp !joueur;
+                        affichage_hud !joueur;
+                        if List.length !tab = 0 then result := "win";
                     with Failure a -> begin 
                         affichage_end_level !result !joueur; 
                         ignore a;
@@ -368,6 +375,7 @@ let _ =
    (*enter*)| 10 -> if !state = 'l' then state := 'g';
             | 121 -> if !state = 'r' then begin
                 state := 'g';
+                !joueur.state <- 'a';
                 !joueur.hp <- 550;
                 !joueur.score <- 0;
                 in_game:=false;
