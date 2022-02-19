@@ -278,6 +278,10 @@ let affichage_tab tab selection =
         end;
     ignore (mvaddstr (h/2-10) (w/2-4) (Printf.sprintf "Level %d" selection))
 
+    let affichage_hp joueur = 
+        let h, w = get_size () in
+        couleur rouge vert;
+        ignore (mvaddstr (h/10) (w/10) (Printf.sprintf "HP : %d" joueur.hp))
 
 let print_title () =
     ligne_horiz rouge 2 15 7;
@@ -367,6 +371,7 @@ let _ =
                         *)
                         tab := verif_tile !tab joueur !touche;
                         affichage_tab !tab !selection;
+                        affichage_hp !joueur;
                     with Failure a -> begin 
                         affichage_end_level !result !joueur; 
                         ignore a;
