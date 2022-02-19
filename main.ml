@@ -121,12 +121,18 @@ let tick_particules (particules: particule array ref) =
         putpixel !particules.(i).color !particules.(i).x !particules.(i).y;
     done
 
-let actual = ref 0
-
 let player hp score= {hp = hp; hp_max=hp; score = score; score_streak = 0}
 
-let read =  
-    "10000"
+let affichage_end_level result joueur = 
+    let h, w = get_size () in
+    if result = "lose" then begin
+        couleur rouge noir;
+        ignore (mvaddstr (h/2) (w/2-18) (Printf.sprintf "YOU LOSE, final score : \n well, it doesn't really matter you lost anyway-"));
+    end
+    else begin
+        couleur vert noir;
+        ignore (mvaddstr (h/2) (w/2-8) (Printf.sprintf "YOU WON, final score : %d" joueur.score))
+    end 
 
 let load_level (level : int) : string list=
     let nom_dossier = ref "levels/level" in
@@ -165,7 +171,7 @@ let fail joueur tab : string list =
     begin
       if joueur.hp>80 then joueur.hp <- (joueur.hp - 80) 
       else
-        joueur.hp <- (joueur.hp - 80)
+      affichage_end_level "lose" joueur
      end;
         manual_tri tab
 
@@ -198,8 +204,10 @@ let verif_tile tab joueur touche next=
             end
         done;
     end;
-    if !touch = 0 then manual_tri tab 
-    else if !touch = 1 then hit joueur tab 
+    let remise = Bytes.to_string new_liste in
+    let new_tab = [remise] @ tab in
+    if !touch = 0 then manual_tri new_tab 
+    else if !touch = 1 then hit joueur new_tab 
     else fail joueur tab
 
 let affichage_tab tab size selection=
@@ -213,17 +221,6 @@ let affichage_tab tab size selection=
         done;
         end;
     ignore (mvaddstr (h/2-10) (w/2-4) (Printf.sprintf "Level %d" selection))
-
-let affichage_end_level result joueur = 
-    let h, w = get_size () in
-    if result = "lose" then begin
-        couleur rouge noir;
-        ignore (mvaddstr (h/2) (w/2-18) (Printf.sprintf "YOU LOSE, final score : \n well, it doesn't really matter you lost anyway-"));
-    end
-    else begin
-        couleur vert noir;
-        ignore (mvaddstr (h/2) (w/2-8) (Printf.sprintf "YOU WON, final score : %d" joueur.score))
-    end 
 
 (* ------------------------------------------ MAIN FUNCTION --------------------------------- *)
 
