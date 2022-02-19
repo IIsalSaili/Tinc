@@ -240,17 +240,22 @@ let affichage_tab tab selection =
 let print_title () =
     (*  let ligne_horiz col x1 x2 y =
         let ligne_vert col x y1 y2 =   *)
+    let h, w = get_size () in
+    let xo = w/2-24 in
+    let yo = h/2-13 in
     (* T *)
-    ligne_horiz rouge 2 15 7; ligne_vert rouge 8 8 15; ligne_vert rouge 9 8 15;
+    ligne_horiz rouge (2+xo) (15+xo) (yo+7); ligne_vert rouge (xo+8) (yo+8) (yo+15); ligne_vert rouge (xo+9) (yo+8) (yo+15);
     (* I *) 
-    ligne_vert rouge 18 7 15; ligne_vert rouge 19 7 15; putpixel noir 18 9; putpixel noir 19 9;
+    ligne_vert rouge (xo+18) (yo+7) (yo+15); ligne_vert rouge (xo+19) (yo+7) (yo+15); putpixel noir (xo+18) (yo+9); putpixel noir (xo+19) (yo+9);
     (* N *)
-    ligne_vert rouge 22 7 15; ligne_vert rouge 23 7 15; ligne_vert rouge 31 7 15; 
-    putpixel rouge 24 8; putpixel rouge 25 9; putpixel rouge 26 10; putpixel rouge 27 11; putpixel rouge 28 12;
-    putpixel rouge 29 13; putpixel rouge 30 14; 
-    ligne_vert rouge 32 7 15
-
-
+    ligne_vert rouge (xo+22) (yo+7) (yo+15); ligne_vert rouge (xo+23) (yo+7) (yo+15); ligne_vert rouge (xo+31) (yo+7) (yo+15); 
+    putpixel rouge (xo+24) (yo+8); putpixel rouge (xo+25) (yo+9); putpixel rouge (xo+26) (yo+10); 
+    putpixel rouge (xo+27) (yo+11); putpixel rouge (xo+28) (yo+12);putpixel rouge (xo+29) (yo+13); 
+    putpixel rouge (xo+30) (yo+14); ligne_vert rouge (xo+32) (yo+7) (yo+15);
+    (* C *)
+    ligne_horiz rouge (xo+35) (xo+36) (yo+10); ligne_horiz rouge (xo+36) (xo+37) (yo+9); ligne_horiz rouge (xo+37) (xo+39) (yo+8); 
+    ligne_horiz rouge (xo+39) (xo+44) (yo+7);ligne_horiz rouge (xo+35) (xo+36) (yo+11); ligne_horiz rouge (xo+35) (xo+36) (yo+12); 
+    ligne_horiz rouge (xo+36) (xo+37) (yo+13); ligne_horiz rouge (xo+37) (xo+39) (yo+14); ligne_horiz rouge (xo+39) (xo+44) (yo+15)
 
 
 (* ------------------------------------------ MAIN FUNCTION --------------------------------- *)
@@ -268,7 +273,6 @@ let _ =
         !joueur.hp <- !joueur.hp +1;
 
     let selection = ref 1 in
-
     let particules = ref [|(particule (Random.int w) (Random.int 7) ((Random.int (ncolors -1))+1))|] in
 
     (* variables temporaires *)
@@ -298,10 +302,8 @@ let _ =
         if !state = 't' then begin
 
             print_title ();
-            couleur rouge noir;
-            ignore (mvaddstr (h/2-2) (w/2-8) (Printf.sprintf "Tinc main %3d title" !ch));
             couleur blanc noir;
-            ignore (mvaddstr (h/2) (w/2-10) (Printf.sprintf "Press space to continue"));
+            ignore (mvaddstr (h/2+6) (w/2-10) (Printf.sprintf "Press space to continue"));
         
 
         end
