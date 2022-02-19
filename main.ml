@@ -192,22 +192,8 @@ let indice_of_touche touche : int =
     | 108 -> 4
     | _   -> 999
 
-
-let modif_touche i= 
-    match i with 
-    |0 -> 103
-    |1 -> 104
-    |2 -> 106
-    |3 -> 107
-    |4 -> 108
-    |_ -> 160
-
 let verif_tile (tab : string list) (joueur : joueur ref) touche : string list= 
-    (*
-    let action_valide = ref false in 
-    let tete =  (String.to_bytes (List.hd tab)) in
-    *)
-
+    
     let ligne_finie = ref false in
     let tete = ref (List.hd tab) in
 
@@ -223,13 +209,8 @@ let verif_tile (tab : string list) (joueur : joueur ref) touche : string list=
                 valide := true;
                 Bytes.set !tete_bytes i '0';
 
-            end else begin
-                valide := false; (*inutile mais plus clair*)
             end;
-        end else begin
-            valide := false; (*inutile mais plus clair*)
         end;
-        
         if !valide then begin
             hit joueur;
             tete := Bytes.to_string !tete_bytes;
@@ -237,31 +218,8 @@ let verif_tile (tab : string list) (joueur : joueur ref) touche : string list=
 
         end else
             fail joueur;
-            
-        (*
-        for i=0 to Bytes.length(tete) - 1 do 
-
-            match (List.hd tab).[i] with
-            |'1' -> if modif_touche i = touche then
-            begin
-                Bytes.set tete i '0';
-                action_valide := true;
-                next := true;
-            end
-            |_ ->begin
-                velide := false;
-                next :=true;
-            end
-        done;
-        *)
+        
     end;
-    (*
-    let remise = Bytes.to_string new_liste in
-    let new_tab = tab @ remise in
-    if !touch = 0 then tab
-    else if !touch = 1 then hit joueur new_tab 
-    else fail joueur new_tab
-    *)
     if !ligne_finie then List.tl tab
     else [!tete] @ List.tl tab
 
@@ -284,16 +242,33 @@ let affichage_tab tab selection =
         ignore (mvaddstr (h/10) (w/10) (Printf.sprintf "HP : %d" joueur.hp))
 
 let print_title () =
-    ligne_horiz rouge 2 15 7;
-    ligne_vert rouge 8 8 15;
-    ligne_vert rouge 9 8 15
+    (*  let ligne_horiz col x1 x2 y =
+        let ligne_vert col x y1 y2 =   *)
+    let h, w = get_size () in
+    let xo = w/2-24 in
+    let yo = h/2-13 in
+    (* T *)
+    ligne_horiz rouge (2+xo) (15+xo) (yo+7); ligne_vert rouge (xo+8) (yo+8) (yo+15); ligne_vert rouge (xo+9) (yo+8) (yo+15);
+    (* I *) 
+    ligne_vert rouge (xo+18) (yo+7) (yo+15); ligne_vert rouge (xo+19) (yo+7) (yo+15); putpixel noir (xo+18) (yo+9); putpixel noir (xo+19) (yo+9);
+    (* N *)
+    ligne_vert rouge (xo+22) (yo+7) (yo+15); ligne_vert rouge (xo+23) (yo+7) (yo+15); ligne_vert rouge (xo+31) (yo+7) (yo+15); 
+    putpixel rouge (xo+24) (yo+8); putpixel rouge (xo+25) (yo+9); putpixel rouge (xo+26) (yo+10); 
+    putpixel rouge (xo+27) (yo+11); putpixel rouge (xo+28) (yo+12);putpixel rouge (xo+29) (yo+13); 
+    putpixel rouge (xo+30) (yo+14); ligne_vert rouge (xo+32) (yo+7) (yo+15);
+    (* C *)
+    ligne_horiz rouge (xo+35) (xo+36) (yo+10); ligne_horiz rouge (xo+36) (xo+37) (yo+9); ligne_horiz rouge (xo+37) (xo+39) (yo+8); 
+    ligne_horiz rouge (xo+39) (xo+44) (yo+7);ligne_horiz rouge (xo+35) (xo+36) (yo+11); ligne_horiz rouge (xo+35) (xo+36) (yo+12); 
+    ligne_horiz rouge (xo+36) (xo+37) (yo+13); ligne_horiz rouge (xo+37) (xo+39) (yo+14); ligne_horiz rouge (xo+39) (xo+44) (yo+15)
+
+
 (* ------------------------------------------ MAIN FUNCTION --------------------------------- *)
 
 let _ =
     (* variables generales *)
     let h, w = get_size () in
     ignore (h);
-    let nb_levels = 5 in
+    let nb_levels = 3 in
     let running = ref true in
     let state = ref 't' in
     let touche = ref 0 in
@@ -302,7 +277,6 @@ let _ =
         !joueur.hp <- !joueur.hp +1;
 
     let selection = ref 1 in
-
     let particules = ref [|(particule (Random.int w) (Random.int 7) ((Random.int (ncolors -1))+1))|] in
 
     (* variables temporaires *)
@@ -332,10 +306,8 @@ let _ =
         if !state = 't' then begin
 
             print_title ();
-            couleur rouge noir;
-            ignore (mvaddstr (h/2-2) (w/2-8) (Printf.sprintf "Tinc main %3d title" !ch));
             couleur blanc noir;
-            ignore (mvaddstr (h/2) (w/2-10) (Printf.sprintf "Press space to continue"));
+            ignore (mvaddstr (h/2+6) (w/2-10) (Printf.sprintf "Press space to continue"));
         
 
         end
@@ -354,21 +326,12 @@ let _ =
             if not !in_game then begin
 
                 tab := load_level !selection;
-                (*tab := ["10000";"01000";"10000";"00100";"00001";"00010";"01000"];*)
                 in_game := true;
 
             end else begin
                 (* level loop *)
                 if !joueur.state = 'a' then begin
                     try
-                        (*
-                        if !osef = true then begin
-                        affichage_tab !tab !selection;
-                        osef:= false;
-                        end;
-                        tab := verif_tile !tab joueur !touche;
-                        affichage_tab !tab !selection;
-                        *)
                         tab := verif_tile !tab joueur !touche;
                         affichage_tab !tab !selection;
                         affichage_hp !joueur;
