@@ -236,7 +236,8 @@ let affichage_tab tab selection =
         let hd = List.nth tab i in
         ignore (mvaddstr (6+h/2-2*i) (5+w/2-8) (Printf.sprintf "%s" hd));
     done;
-    ignore (mvaddstr (h/2-10) (w/2-4) (Printf.sprintf "Level %d" selection))
+    couleur rouge noir;
+    ignore (mvaddstr (h-2) (w-75) (Printf.sprintf "Level %d" selection))
 
     let affichage_hud joueur = 
         let h, w = get_size () in
