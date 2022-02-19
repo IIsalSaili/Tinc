@@ -173,30 +173,30 @@ let modif_touche i=
     match i with 
     |0 -> 103
     |1 -> 104
-    |2 -> 105
-    |3 -> 106
-    |4 -> 107
+    |2 -> 106
+    |3 -> 107
+    |4 -> 108
     |_ -> 160
 
-let verif_tile tab joueur next= 
-    let touche = getch () in
+let verif_tile tab joueur touche next= 
     let touch = ref 0 in 
     let new_liste =  (String.to_bytes (List.hd tab)) in
-    if touche >= 0
-    then begin
-    for i=0 to Bytes.length(new_liste) - 1 do 
-        match (List.hd tab).[i] with
-        |'1' -> if modif_touche i = touche then
-         begin
-            Bytes.set new_liste i '0';
-            touch := 1;
-            next := true;
-        end
-        |_ -> if modif_touche i = touche then begin
-            touch :=2;
-            next :=true;
-        end
-    done;
+
+    if touche >= 0 then begin
+        
+        for i=0 to Bytes.length(new_liste) - 1 do 
+            match (List.hd tab).[i] with
+            |'1' -> if modif_touche i = touche then
+            begin
+                Bytes.set new_liste i '0';
+                touch := 1;
+                next := true;
+            end
+            |_ -> if modif_touche i = touche then begin
+                touch :=2;
+                next :=true;
+            end
+        done;
     end;
     if !touch = 0 then manual_tri tab 
     else if !touch = 1 then hit joueur tab 
@@ -234,6 +234,7 @@ let _ =
     let nb_levels = 5 in
     let running = ref true in
     let state = ref 't' in
+    let touche = ref 0 in
 
     let joueur = (player 549 0) in
         joueur.hp <- joueur.hp +1;
@@ -308,7 +309,7 @@ let _ =
 
                     *)  
                     affichage_tab !tab (List.length !tab) !selection;
-                    tab := verif_tile !tab joueur next;
+                    tab := verif_tile !tab joueur !touche next;
                     if !next = true then affichage_tab !tab (List.length !tab) !selection;
 
                 with Failure a -> begin 
@@ -325,9 +326,9 @@ let _ =
         Unix.sleepf 0.05;
         ignore(refresh());
 
-        let c = getch () in
-        if c >= 0 then begin
-            match c with
+        touche := getch ();
+        if !touche >= 0 then begin
+            match !touche with
             | 27 -> running := false;
   (*espace*)| 32 -> if !state = 't' then state := 'l'
                else if !state = 'l' then state := 'g' 
@@ -337,7 +338,7 @@ let _ =
             | _ -> ()
             
         end;
-        if c <> -1 then ch := c;
+        if !touche <> -1 then ch := !touche;
 
 
         
