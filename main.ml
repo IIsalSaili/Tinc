@@ -198,7 +198,7 @@ let verif_tile tab joueur touche next=
                 touch := 1;
                 next := true;
             end
-            |_ -> if modif_touche i = touche then begin
+            |_ ->begin
                 touch :=2;
                 next :=true;
             end
@@ -206,9 +206,9 @@ let verif_tile tab joueur touche next=
     end;
     let remise = Bytes.to_string new_liste in
     let new_tab = [remise] @ tab in
-    if !touch = 0 then manual_tri new_tab 
+    if !touch = 0 then tab
     else if !touch = 1 then hit joueur new_tab 
-    else fail joueur tab
+    else fail joueur new_tab
 
 let affichage_tab tab size selection=
     couleur bleu noir;
@@ -304,7 +304,10 @@ let _ =
                     *)  
                     affichage_tab !tab (List.length !tab) !selection;
                     tab := verif_tile !tab joueur !touche next;
-                    if !next = true then affichage_tab !tab (List.length !tab) !selection;
+                    if !next = true then begin
+                        affichage_tab !tab (List.length !tab) !selection;
+                        next := false;
+                    end;
 
                 with Failure a -> begin 
                     affichage_end_level !result joueur; 
