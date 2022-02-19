@@ -307,6 +307,7 @@ let _ =
 
             print_title ();
             couleur blanc noir;
+            ignore (mvaddstr (h/2+8) (w/2-10) (Printf.sprintf "nombre : %d" !ch));
             ignore (mvaddstr (h/2+6) (w/2-10) (Printf.sprintf "Press space to continue"));
         
 
@@ -340,10 +341,15 @@ let _ =
                         ignore a;
                         end
                 end else begin
-                    affichage_end_level "lose" !joueur;
+                    state := 'r'
                 end;
                 
             end;
+        end
+        else if !state = 'r' then begin
+            couleur rouge noir;
+            ignore (mvaddstr (h-6) (w-12) (Printf.sprintf "Wanna retry ? Press Y"));
+            affichage_end_level "lose" !joueur;
         end;
         
         
@@ -360,6 +366,12 @@ let _ =
     (*left*)| 260 -> if !state = 'l' && !selection > 1 then selection := !selection -1
    (*right*)| 261 -> if !state = 'l' && !selection < nb_levels then selection := !selection +1
    (*enter*)| 10 -> if !state = 'l' then state := 'g';
+            | 121 -> if !state = 'r' then begin
+                state := 'g';
+                !joueur.hp <- 550;
+                !joueur.score <- 0;
+                in_game:=false;
+            end;
             | _ -> ()
             
         end;
