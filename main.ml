@@ -215,7 +215,7 @@ let affichage_tab tab size selection=
     clear();
     let h, w = get_size () in
     if size > 6 then begin
-        for i= 1 to 5 do
+        for i= 0 to 4 do
             let hd = List.nth tab i in
             ignore (mvaddstr (6+h/2-2*i) (5+w/2-8) (Printf.sprintf "%s" hd));
         done;
