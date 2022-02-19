@@ -203,11 +203,7 @@ let modif_touche i=
     |_ -> 160
 
 let verif_tile (tab : string list) (joueur : joueur ref) touche : string list= 
-    (*
-    let action_valide = ref false in 
-    let tete =  (String.to_bytes (List.hd tab)) in
-    *)
-
+    
     let ligne_finie = ref false in
     let tete = ref (List.hd tab) in
 
@@ -223,13 +219,8 @@ let verif_tile (tab : string list) (joueur : joueur ref) touche : string list=
                 valide := true;
                 Bytes.set !tete_bytes i '0';
 
-            end else begin
-                valide := false; (*inutile mais plus clair*)
             end;
-        end else begin
-            valide := false; (*inutile mais plus clair*)
         end;
-        
         if !valide then begin
             hit joueur;
             tete := Bytes.to_string !tete_bytes;
@@ -237,31 +228,8 @@ let verif_tile (tab : string list) (joueur : joueur ref) touche : string list=
 
         end else
             fail joueur;
-            
-        (*
-        for i=0 to Bytes.length(tete) - 1 do 
-
-            match (List.hd tab).[i] with
-            |'1' -> if modif_touche i = touche then
-            begin
-                Bytes.set tete i '0';
-                action_valide := true;
-                next := true;
-            end
-            |_ ->begin
-                velide := false;
-                next :=true;
-            end
-        done;
-        *)
+        
     end;
-    (*
-    let remise = Bytes.to_string new_liste in
-    let new_tab = tab @ remise in
-    if !touch = 0 then tab
-    else if !touch = 1 then hit joueur new_tab 
-    else fail joueur new_tab
-    *)
     if !ligne_finie then List.tl tab
     else [!tete] @ List.tl tab
 
@@ -280,9 +248,21 @@ let affichage_tab tab selection =
 
 
 let print_title () =
-    ligne_horiz rouge 2 15 7;
-    ligne_vert rouge 8 8 15;
-    ligne_vert rouge 9 8 15
+    (*  let ligne_horiz col x1 x2 y =
+        let ligne_vert col x y1 y2 =   *)
+    (* T *)
+    ligne_horiz rouge 2 15 7; ligne_vert rouge 8 8 15; ligne_vert rouge 9 8 15;
+    (* I *) 
+    ligne_vert rouge 18 7 15; ligne_vert rouge 19 7 15; putpixel noir 18 9; putpixel noir 19 9;
+    (* N *)
+    ligne_vert rouge 22 7 15; ligne_vert rouge 23 7 15; ligne_vert rouge 31 7 15; 
+    putpixel rouge 24 8; putpixel rouge 25 9; putpixel rouge 26 10; putpixel rouge 27 11; putpixel rouge 28 12;
+    putpixel rouge 29 13; putpixel rouge 30 14; 
+    ligne_vert rouge 32 7 15
+
+
+
+
 (* ------------------------------------------ MAIN FUNCTION --------------------------------- *)
 
 let _ =
@@ -350,21 +330,12 @@ let _ =
             if not !in_game then begin
 
                 tab := load_level !selection;
-                (*tab := ["10000";"01000";"10000";"00100";"00001";"00010";"01000"];*)
                 in_game := true;
 
             end else begin
                 (* level loop *)
                 if !joueur.state = 'a' then begin
                     try
-                        (*
-                        if !osef = true then begin
-                        affichage_tab !tab !selection;
-                        osef:= false;
-                        end;
-                        tab := verif_tile !tab joueur !touche;
-                        affichage_tab !tab !selection;
-                        *)
                         tab := verif_tile !tab joueur !touche;
                         affichage_tab !tab !selection;
                     with Failure a -> begin 
