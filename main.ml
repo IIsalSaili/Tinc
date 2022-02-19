@@ -295,15 +295,7 @@ let _ =
             end else begin
                 (* level loop *)
                 try
-                (*
-                    ------------ souci -------------
-                    (c'est de la m... ce que j'ai écrit la)
-                    let hd = List.hd !tab in
-                    
-                    tab := verif_tile !tab joueur next;
-                    if !next = true then tab := List.tl !tab;
-                    *) 
-
+                
                     if !osef = true then begin
                     affichage_tab !tab (List.length !tab) !selection;
                     osef:= false;
