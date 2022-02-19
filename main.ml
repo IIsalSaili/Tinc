@@ -192,16 +192,6 @@ let indice_of_touche touche : int =
     | 108 -> 4
     | _   -> 999
 
-
-let modif_touche i= 
-    match i with 
-    |0 -> 103
-    |1 -> 104
-    |2 -> 106
-    |3 -> 107
-    |4 -> 108
-    |_ -> 160
-
 let verif_tile (tab : string list) (joueur : joueur ref) touche : string list= 
     
     let ligne_finie = ref false in
