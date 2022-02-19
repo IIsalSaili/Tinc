@@ -215,7 +215,7 @@ let affichage_tab tab size selection=
     clear();
     let h, w = get_size () in
     if size > 6 then begin
-        for i= 1 to 5 do
+        for i= 0 to 4 do
             let hd = List.nth tab i in
             ignore (mvaddstr (6+h/2-2*i) (5+w/2-8) (Printf.sprintf "%s" hd));
         done;
@@ -253,6 +253,7 @@ let _ =
     let tab = ref [] in
     let result = ref "lose" in
     let next = ref false in
+    let osef = ref true in
 
     let com_particules = ref 0 in
     attroff(A.color);
@@ -299,20 +300,13 @@ let _ =
             end else begin
                 (* level loop *)
                 try
-                (*
-                    ------------ souci -------------
-                    (c'est de la m... ce que j'ai écrit la)
-                    let hd = List.hd !tab in
-                    
-                    tab := verif_tile !tab joueur next;
-                    if !next = true then tab := List.tl !tab;
-                    *)  
+                
+                    if !osef = true then begin
                     affichage_tab !tab (List.length !tab) !selection;
-                    tab := verif_tile !tab joueur !touche next;
-                    if !next = true then begin
-                        affichage_tab !tab (List.length !tab) !selection;
-                        next := false;
+                    osef:= false;
                     end;
+                    tab := verif_tile !tab joueur !touche next;
+                    affichage_tab !tab (List.length !tab) !selection
 
                 with Failure a -> begin 
                     affichage_end_level !result joueur; 
