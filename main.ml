@@ -249,6 +249,7 @@ let _ =
     let tab = ref [] in
     let result = ref "lose" in
     let next = ref false in
+    let osef = ref true in
 
     let com_particules = ref 0 in
     attroff(A.color);
@@ -301,13 +302,14 @@ let _ =
                     
                     tab := verif_tile !tab joueur next;
                     if !next = true then tab := List.tl !tab;
-                    *)  
+                    *) 
+
+                    if !osef = true then begin
                     affichage_tab !tab (List.length !tab) !selection;
-                    tab := verif_tile !tab joueur !touche next;
-                    if !next = true then begin
-                        affichage_tab !tab (List.length !tab) !selection;
-                        next := false;
+                    osef:= false;
                     end;
+                    tab := verif_tile !tab joueur !touche next;
+                    affichage_tab !tab (List.length !tab) !selection
 
                 with Failure a -> begin 
                     affichage_end_level !result joueur; 
