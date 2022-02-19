@@ -222,6 +222,10 @@ let affichage_tab tab size selection=
         end;
     ignore (mvaddstr (h/2-10) (w/2-4) (Printf.sprintf "Level %d" selection))
 
+let print_title () =
+    ligne_horiz rouge 2 15 7;
+    ligne_vert rouge 8 8 15;
+    ligne_vert rouge 9 8 15
 (* ------------------------------------------ MAIN FUNCTION --------------------------------- *)
 
 let _ =
@@ -266,6 +270,7 @@ let _ =
 
         if !state = 't' then begin
 
+            print_title ();
             couleur rouge noir;
             ignore (mvaddstr (h/2-2) (w/2-8) (Printf.sprintf "Tinc main %3d title" !ch));
             couleur blanc noir;
