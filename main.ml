@@ -145,16 +145,9 @@ let load_level (level : int) : string list=
         
     List.rev !lignes;;
 
-let lose joueur=
-    joueur.hp <- 0
-    (*Printf.sprintf "Défaite ! Score atteint avant de perdre : %d", joueur.score*)
-
-let win joueur=
-    Printf.sprintf "Victoire ! Score atteint : %d", joueur.score
-
-let rec manual_tri tab =
+let manual_tri tab =
     match tab with
-    |t::q -> if t = "00000" then q else manual_tri q
+    |t::q -> if t = "00000" then q else tab
     |[] -> []
 
 let hit joueur tab= 
@@ -205,10 +198,13 @@ let verif_tile tab joueur next=
         end
     done;
     end;
-    if !touch = 1 then hit joueur tab else fail joueur tab
+    if !touch = 0 then manual_tri tab 
+    else if !touch = 1 then hit joueur tab 
+    else fail joueur tab
 
 let affichage_tab tab size=
     couleur bleu noir;
+    clear();
     let h, w = get_size () in
     if size > 6 then begin
         for i= 1 to 5 do
@@ -267,7 +263,7 @@ let _ =
             particules := Array.append !particules [|(particule (Random.int w) (Random.int 7) ((Random.int (ncolors -1))+1))|];
             com_particules := !com_particules +1;
         end;
-        tick_particules particules;
+        if not !in_game then tick_particules particules;
 
         if !state = 't' then begin
 
@@ -293,6 +289,8 @@ let _ =
             if not !in_game then begin
 
                 tab := load_level !selection;
+                (*tab := ["10000";"01000";"10000";"00100";"00001";"00010";"01000"];*)
+                in_game := true;
 
             end else begin
                 (* level loop *)
@@ -308,8 +306,9 @@ let _ =
                     if !next = true then tab := List.tl !tab;
 
                     *)  
-                    ignore (next);
                     affichage_tab !tab (List.length !tab);
+                    tab := verif_tile !tab joueur next;
+                    if !next = true then affichage_tab !tab (List.length !tab);
 
                     ignore (mvaddstr (h/2-10) (w/2-4) (Printf.sprintf "Level %d" !selection));
                 with Failure a -> begin 
