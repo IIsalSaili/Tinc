@@ -178,8 +178,7 @@ let modif_touche i=
     |4 -> 107
     |_ -> 160
 
-let verif_tile tab joueur next= 
-    let touche = getch () in
+let verif_tile tab joueur next touche= 
     let touch = ref 0 in 
     let new_liste =  (String.to_bytes (List.hd tab)) in
     if touche >= 0
@@ -308,7 +307,9 @@ let _ =
 
                     *)  
                     affichage_tab !tab (List.length !tab) !selection;
-                    tab := verif_tile !tab joueur next;
+                    let touche = getch() in
+                    if touche >0 then 
+                    tab := verif_tile !tab joueur next touche;
                     if !next = true then affichage_tab !tab (List.length !tab) !selection;
 
                 with Failure a -> begin 
