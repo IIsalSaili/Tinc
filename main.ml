@@ -323,6 +323,9 @@ let _ =
 
         end
         else if !state = 'l' then begin
+            for i = 0 to h do
+                ligne_horiz noir (w/2-16) (w/2+16) i
+            done;
             couleur rouge noir;
             ignore (mvaddstr (h/2-4) (w/2-8) (Printf.sprintf "Choose your level"));
 
@@ -340,8 +343,9 @@ let _ =
                 in_game := true;
 
             end else begin
-                (* level loop *)
+                (* ------------------- level loop --------------------- *)
                 if !joueur.state = 'a' then begin
+                    !joueur.hp <- !joueur.hp -1;
                     try
                         tab := verif_tile !tab joueur !touche;
                         affichage_tab !tab !selection;
