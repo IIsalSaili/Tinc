@@ -245,12 +245,12 @@ let affichage_tab tab selection =
     let h, w = get_size () in
     for i= 0 to size-1 do
         let hd = List.nth tab i in
-        ignore (mvaddstr (6+h/2-2*i) (5+w/2-8) (Printf.sprintf "%s" hd));
-        ignore (mvaddstr (6+h/2) (5+w/2-8) (Printf.sprintf "f g h j k" ));
+        couleur bleu noir;
+        ignore (mvaddstr (h/2+16) (5+w/2-8) (Printf.sprintf "f g h j k" ));
         affichage_ligne_level hd i;
     done;
     couleur rouge noir;
-    ignore (mvaddstr (h-2) (w-75) (Printf.sprintf "Level %d" selection))
+    ignore (mvaddstr (h-2) (w-7) (Printf.sprintf "Level %d" selection))
 
     let affichage_hud joueur = 
         let h, w = get_size () in
