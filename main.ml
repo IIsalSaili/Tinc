@@ -236,6 +236,7 @@ let affichage_tab tab selection =
     for i= 0 to size-1 do
         let hd = List.nth tab i in
         ignore (mvaddstr (6+h/2-2*i) (5+w/2-8) (Printf.sprintf "%s" hd));
+        ignore (mvaddstr (6+h/2) (5+w/2-8) (Printf.sprintf "f g h j k" ));
     done;
     couleur rouge noir;
     ignore (mvaddstr (h-2) (w-75) (Printf.sprintf "Level %d" selection))
@@ -244,7 +245,7 @@ let affichage_tab tab selection =
         let h, w = get_size () in
         couleur rouge vert;
         ignore (mvaddstr (h/10) (w/10) (Printf.sprintf "HP : %d" joueur.hp));
-        ignore (ligne_horiz vert (20) (20+(joueur.hp*w)/200) (h-2));
+        ignore (ligne_horiz vert (13) (13+(joueur.hp*w)/250) (h-2));
 
         couleur bleu blanc;
         ignore (mvaddstr (h/10) (w-20) (Printf.sprintf "Score : %d" joueur.score));
@@ -346,6 +347,7 @@ let _ =
                 (* ------------------- level loop --------------------- *)
                 if !joueur.state = 'a' then begin
                     !joueur.hp <- !joueur.hp -1;
+                    if !joueur.hp <= 0 then state := 'r';
                     try
                         tab := verif_tile !tab joueur !touche;
                         affichage_tab !tab !selection;
