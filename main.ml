@@ -292,7 +292,6 @@ let print_title () =
 let _ =
     (* variables generales *)
     let h, w = get_size () in
-    ignore (h);
     let nb_levels = 3 in
     let running = ref true in
     let state = ref 't' in
@@ -313,7 +312,7 @@ let _ =
     let tab = ref [] in
     let result = ref "lose" in
     (*let osef = ref true in*)
-
+    let time = ref 0 in
     let com_particules = ref 0 in
     attroff(A.color);
     (* ----------- main loop ---------- *)
@@ -356,15 +355,18 @@ let _ =
 
                 tab := load_level !selection;
                 in_game := true;
-
+                time := 0;
+                
             end else begin
                 (* ------------------- level loop --------------------- *)
                 if !joueur.state = 'a' then begin
+                
                     !joueur.hp <- !joueur.hp -1;
                     if !joueur.hp <= 0 then state := 'r';
+                    if !in_game then time := !time +1;
                     try
                         tab := verif_tile !tab joueur !touche;
-
+                        
                         for i = 0 to h do
                             ligne_horiz gris (w/2-10) (w/2+10) i;
                         done;
@@ -372,9 +374,13 @@ let _ =
                         affichage_tab !tab !selection;
                         
                         affichage_hud !joueur;
-                        if List.length !tab = 0 then result := "win";
+                        if List.length !tab = 0 then begin 
+                        result := "win";
+                        in_game := false;
+                        end;
                     with Failure a -> begin (*fin level*)
                         affichage_end_level !result !joueur; 
+                        in_game := false;
                         ignore (mvaddstr (h-6) (w-55) (Printf.sprintf "Wanna retry ? Press Y"));
                         ignore a;
                         end
