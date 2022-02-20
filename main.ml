@@ -361,12 +361,11 @@ let _ =
             end else begin
                 (* ------------------- level loop --------------------- *)
                 if !joueur.state = 'a' then begin
-<<<<<<< HEAD
                 
                     !joueur.hp <- !joueur.hp -1;
-=======
+
                     if !result <> "win" then !joueur.hp <- !joueur.hp -1;
->>>>>>> 22cc4fc0f61894a4f2bc1a2473689af0d4482e93
+
                     if !joueur.hp <= 0 then state := 'r';
                     if !in_game then time := !time +1;
                     try
