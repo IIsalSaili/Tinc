@@ -180,20 +180,20 @@ let fail (joueur : joueur ref) =
 
 let touche_valide touche : bool =
     match touche with
+    | 102 -> true
     | 103 -> true
     | 104 -> true
     | 106 -> true
     | 107 -> true
-    | 108 -> true
     | _   -> false
 
 let indice_of_touche touche : int =
     match touche with
-    | 103 -> 0
-    | 104 -> 1
-    | 106 -> 2
-    | 107 -> 3
-    | 108 -> 4
+    | 102 -> 0
+    | 103 -> 1
+    | 104 -> 2
+    | 106 -> 3
+    | 107 -> 4
     | _   -> 999
 
 let verif_tile (tab : string list) (joueur : joueur ref) touche : string list= 
@@ -227,6 +227,16 @@ let verif_tile (tab : string list) (joueur : joueur ref) touche : string list=
     if !ligne_finie then List.tl tab
     else [!tete] @ List.tl tab
 
+let affichage_ligne_level ligne x =
+    let h,w = get_size () in
+    let d_x = 5 in
+    for i = 0 to String.length ligne - 1 do
+        let c = ref 0 in
+        if ligne.[i] = '1' then c := bleu
+        else c := blanc;
+        ligne_horiz !c (w/2+3*i-d_x) (1+w/2+3*i-d_x) (6+h/2-2*x);
+    done
+
 let affichage_tab tab selection =
     let size = List.length tab in
     couleur bleu noir;
@@ -234,7 +244,7 @@ let affichage_tab tab selection =
     let h, w = get_size () in
     for i= 0 to size-1 do
         let hd = List.nth tab i in
-        ignore (mvaddstr (6+h/2-2*i) (5+w/2-8) (Printf.sprintf "%s" hd));
+        affichage_ligne_level hd i;
     done;
     couleur rouge noir;
     ignore (mvaddstr (h-2) (w-75) (Printf.sprintf "Level %d" selection))
@@ -257,7 +267,10 @@ let print_title () =
     (* T *)
     ligne_horiz rouge (2+xo) (15+xo) (yo+7); ligne_vert rouge (xo+8) (yo+8) (yo+15); ligne_vert rouge (xo+9) (yo+8) (yo+15);
     (* I *) 
-    ligne_vert rouge (xo+18) (yo+7) (yo+15); ligne_vert rouge (xo+19) (yo+7) (yo+15); putpixel noir (xo+18) (yo+9); putpixel noir (xo+19) (yo+9);
+    ligne_vert rouge (xo+18) (yo+7) (yo+8); 
+    ligne_vert rouge (xo+19) (yo+7) (yo+8);
+    ligne_vert rouge (xo+18) (yo+10) (yo+15); 
+    ligne_vert rouge (xo+19) (yo+10) (yo+15); 
     (* N *)
     ligne_vert rouge (xo+22) (yo+7) (yo+15); ligne_vert rouge (xo+23) (yo+7) (yo+15); ligne_vert rouge (xo+31) (yo+7) (yo+15); 
     putpixel rouge (xo+24) (yo+8); putpixel rouge (xo+25) (yo+9); putpixel rouge (xo+26) (yo+10); 
@@ -345,10 +358,16 @@ let _ =
                     !joueur.hp <- !joueur.hp -1;
                     try
                         tab := verif_tile !tab joueur !touche;
+
+                        for i = 0 to h do
+                            ligne_horiz gris (w/2-10) (w/2+10) i;
+                        done;
+
                         affichage_tab !tab !selection;
+                        
                         affichage_hud !joueur;
                         if List.length !tab = 0 then result := "win";
-                    with Failure a -> begin 
+                    with Failure a -> begin (*fin level*)
                         affichage_end_level !result !joueur; 
                         ignore a;
                         end
