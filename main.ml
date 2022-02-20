@@ -246,7 +246,7 @@ let affichage_tab tab selection =
     for i= 0 to size-1 do
         let hd = List.nth tab i in
         couleur bleu noir;
-        ignore (mvaddstr (h/2+16) (5+w/2-8) (Printf.sprintf "f g h j k" ));
+        ignore (mvaddstr (h/2+8) (-5+w/2) (Printf.sprintf "f  g  h  j  k" ));
         affichage_ligne_level hd i;
     done;
     couleur rouge noir;
@@ -360,7 +360,7 @@ let _ =
             end else begin
                 (* ------------------- level loop --------------------- *)
                 if !joueur.state = 'a' then begin
-                    !joueur.hp <- !joueur.hp -1;
+                    if !result <> "win" then !joueur.hp <- !joueur.hp -1;
                     if !joueur.hp <= 0 then state := 'r';
                     try
                         tab := verif_tile !tab joueur !touche;
