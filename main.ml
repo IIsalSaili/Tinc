@@ -332,7 +332,8 @@ let _ =
 
             print_title ();
             couleur blanc noir;
-            ignore (mvaddstr (h/2+8) (w/2-10) (Printf.sprintf "nombre : %d" !ch));
+            ignore (mvaddstr (h/2+8) (w/3-10) (Printf.sprintf "Press return to go back or exit the game from the main screen"));
+            (*ignore (mvaddstr (h/2+8) (w/2-10) (Printf.sprintf "nombre : %d" !ch));*)
             ignore (mvaddstr (h/2+6) (w/2-10) (Printf.sprintf "Press space to continue"));
         
 
@@ -398,7 +399,6 @@ let _ =
         touche := getch ();
         if !touche >= 0 then begin
             match !touche with
-            | 27 -> running := false;
   (*espace*)| 32 -> if !state = 't' then state := 'l'
                else if !state = 'l' then state := 'g' 
     (*left*)| 260 -> if !state = 'l' && !selection > 1 then selection := !selection -1
@@ -410,7 +410,26 @@ let _ =
                 !joueur.hp <- 200;
                 !joueur.score <- 0;
                 in_game:=false;
+                result := "lose";
             end;
+            | 263 ->  if !state = 'l' then state := 't' else if !state = 'r' then begin
+                state := 'l';
+                !joueur.hp <- 200;
+                !joueur.score <- 0;
+                in_game:=false;
+                result := "win";
+                !joueur.state <- 'a';
+            end 
+                 else if !result = "win" then 
+            begin
+                state := 'l';
+                !joueur.hp <- 200;
+                !joueur.score <- 0;
+                in_game:=false;
+                result := "win";
+                !joueur.state <- 'a';
+            end
+
             | _ -> ()
             
         end;
