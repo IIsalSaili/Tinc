@@ -128,7 +128,8 @@ let affichage_end_level result joueur =
     let h, w = get_size () in
     if result = "lose" then begin
         couleur rouge noir;
-        ignore (mvaddstr (h/2) (w/2-18) (Printf.sprintf "YOU LOSE, final score : \n well, it doesn't really matter you lost anyway-"));
+        ignore (mvaddstr (h/2) (w/2-10) (Printf.sprintf "YOU LOSE, final score :"));
+        ignore (mvaddstr (h/2+2) (w/2-25) (Printf.sprintf "Well, it doesn't really matter you lost anyway-"));
     end
     else begin
         couleur vert noir;
@@ -162,7 +163,7 @@ let hit (joueur : joueur ref) =
     let ajout = ref 0 in
     !joueur.score <- !joueur.score + 100 * !joueur.score_streak;
     !joueur.score_streak <- !joueur.score_streak + 1;
-    if !joueur.hp >=550 then ajout := 0 else ajout := 50;
+    if !joueur.hp >=200 then ajout := 0 else ajout := 50;
     !joueur.hp <- (!joueur.hp + !ajout)
     (*manual_tri tab*)
 
@@ -243,6 +244,8 @@ let affichage_tab tab selection =
         let h, w = get_size () in
         couleur rouge vert;
         ignore (mvaddstr (h/10) (w/10) (Printf.sprintf "HP : %d" joueur.hp));
+        ignore (ligne_horiz vert (20) (20+(joueur.hp*w)/200) (h-2));
+
         couleur bleu blanc;
         ignore (mvaddstr (h/10) (w-20) (Printf.sprintf "Score : %d" joueur.score));
         couleur rouge blanc;
@@ -280,7 +283,7 @@ let _ =
     let state = ref 't' in
     let touche = ref 0 in
 
-    let joueur = ref (player 549 0) in
+    let joueur = ref (player 199 0) in
         !joueur.hp <- !joueur.hp +1;
 
     let selection = ref 1 in
@@ -346,6 +349,7 @@ let _ =
                         if List.length !tab = 0 then result := "win";
                     with Failure a -> begin 
                         affichage_end_level !result !joueur; 
+                        ignore (mvaddstr (h-6) (w-55) (Printf.sprintf "Wanna retry ? Press Y"));
                         ignore a;
                         end
                 end else begin
@@ -356,7 +360,7 @@ let _ =
         end
         else if !state = 'r' then begin
             couleur rouge noir;
-            ignore (mvaddstr (h-6) (w-12) (Printf.sprintf "Wanna retry ? Press Y"));
+            ignore (mvaddstr (h-6) (w-55) (Printf.sprintf "Wanna retry ? Press Y"));
             affichage_end_level "lose" !joueur;
         end;
         
@@ -374,10 +378,10 @@ let _ =
     (*left*)| 260 -> if !state = 'l' && !selection > 1 then selection := !selection -1
    (*right*)| 261 -> if !state = 'l' && !selection < nb_levels then selection := !selection +1
    (*enter*)| 10 -> if !state = 'l' then state := 'g';
-            | 121 -> if !state = 'r' then begin
+            | 121 -> if !state = 'r' || !result = "win" then begin
                 state := 'g';
                 !joueur.state <- 'a';
-                !joueur.hp <- 550;
+                !joueur.hp <- 200;
                 !joueur.score <- 0;
                 in_game:=false;
             end;
