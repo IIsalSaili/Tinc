@@ -1,7 +1,28 @@
-Bon du coup le principe du jeu, tout le monde connaît les jeux comme OSU ou Guitar Hero, axés sur le rythme et sur le fait d'appuyer sur des touches ou de cliquer sur l'écran au bon timing.
-Bah on a juste piqué les deux concepts.
-Ouais.
-Plus sérieusement l'idée du jeu c'est d'appuyer sur les bonnes touches quand elles apparaissent à l'écran, une erreur sera pénalisée et le fait de ne pas appuyer assez vite aussi, c'est donc à la fois un jeu d'efficacité et de rapidité.
-Le jeu se joue avec les touches GHJKL (pas forcément dans cet ordre, faut suivre un peu).
+Tinc, un projet de jeu créé par Dziga et Ilias.
 
+Présentation :
+
+Les jeux comme Guitar Hero ou Osu s'appuient sur un principe simple : appuyer sur des boutons au bon moment, et surtout sur les bons boutons, et le score est ensuite calculé en fonction des performances du joueur, évidemment les erreurs sont sanctionnées.
+Pour ce qui est de Tinc c'est un peu le même principe, à l'écran s'affichent des grilles avec des tuiles, et il faut appuyer sur les bons boutons pour les faire disparaître, une erreur est sanctionné par une perte de PV et une augmentation moins rapide du score, tandis qu'un coup correcte est récompensé par un gain de PV et une augmentation du score, qui par ailleurs augmentera alors plus rapidement.
+Bien entendu la vie du joueur descend en permanence pour le forcer à agir, sinon cela ne serait qu'un jeu de bon sens.
+
+Réalisation : 
+
+Globalement la répartition des tâches initiales a surtout servi à nous permettre de nous lancer dans le travail plus rapidement, elle n'a progressivement plus eu de sens puisque l'on modifiait chacun les parties de l'autre au besoin.
+Cependant de base l'idée était :
+Ilias : Le gameplay du jeu globalement
+Dziga : L'aspect graphique du jeu et des menus + Gestion des levels
+Une fois la base du jeu créé et un semblant d'interface disponible il ne restait plus qu'à faire fonctionner le main loop, et ensuite à rajouter petit à petit des fonctionnalités pour rendre le tout plus agréable (visuel, raccourcis etc...)
+Bien entendu cela ne s'est pas déroulé sans accroc.
+
+
+Les accrocs en question :
+
+(On met à part les soucis de pc qui ont contribué à joyeusement gâcher mon début de vacances même si honnêtement ça aurait sa place ici)
+Il se trouve que graphics a décidé de ne juste pas fonctionner- (sur le pc région je précise même si étrangement j'ai l'impression qu'à ce stade personne n'est étonné)
+Heureusement curse existe, donc on a pu se pencher sur cette alternative, qui donnait certe bien moins de possibilité, cela dit comme demandé on était censé se concentrer plus sur le jeu que sur les graphismes, donc ce n'était pas si grave
+
+Conclusion (temporaire) : On en est pour l'instant qu'à la première version, les niveaux sont extrêmement basiques puisqu'on y a pas vraiment réfléchis, on les a créé au hasard, le gameplay est donc juste... simple, les PV descendent peu et remontent vite, en gros c'est l'équivalent de si on jouait un match de foot... sans équipe en face.
+Les graphismes aussi ne diraient pas non à quelques améliorations je suppose, il n'y a pas encore de système de highscore mais ce sera le prochain ajout pour sûr, le mode multijoueur n'aura pas grand intérêt ici (même si ce serait amusant de voir comment il faudrait le coder)
+En tout cas la base est en place.
 
