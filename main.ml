@@ -418,7 +418,7 @@ let _ =
                 !joueur.hp <- 200;
                 !joueur.score <- 0;
                 in_game:=false;
-                result := "win";
+                result := "lose";
                 !joueur.state <- 'a';
             end 
                  else if !result = "win" then 
