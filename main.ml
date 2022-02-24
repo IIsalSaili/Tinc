@@ -384,8 +384,8 @@ let _ =
                 end;
                 
             end;
-        end
-        else if !state = 'r' then begin
+        end else if !state = 'r' then begin
+
             couleur rouge noir;
             ignore (mvaddstr (h-6) (w-55) (Printf.sprintf "Wanna retry ? Press Y"));
             affichage_end_level "lose" !joueur;
@@ -412,7 +412,8 @@ let _ =
                 in_game:=false;
                 result := "lose";
             end;
-            | 263 ->  if !state = 'l' then state := 't' else if !state = 'r' then begin
+  (*return*)| 263 ->  if !state = 'l' then state := 't' 
+                 else if !state = 'r' then begin
                 state := 'l';
                 !joueur.hp <- 200;
                 !joueur.score <- 0;
