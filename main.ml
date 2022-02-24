@@ -423,6 +423,7 @@ let _ =
                  else if !result = "win" then 
             begin
                 state := 'l';
+                
                 !joueur.hp <- 200;
                 !joueur.score <- 0;
                 in_game:=false;
